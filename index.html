@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>মাল্টি-অ্যাকাউন্ট স্টার টুল</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1b2030;--mut:#6b7385;--bd:#e3e7f0;--ac:#6d5efc;--ac2:#00b8d9;--ok:#16a34a;--warn:#d97706;--bad:#dc2626;--sh:0 4px 18px rgba(30,40,90,.07)}
+@media (prefers-color-scheme:dark){:root{--bg:#0e111a;--card:#171b27;--tx:#e8ebf5;--mut:#98a1b8;--bd:#262c3d;--ac:#8b7fff;--ac2:#22d3ee;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--sh:0 4px 18px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Hind Siliguri",system-ui,sans-serif;line-height:1.65;padding:16px}
+main{max-width:760px;margin:0 auto}
+.hero{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-radius:18px;padding:24px 22px;margin-bottom:16px;box-shadow:var(--sh)}
+.hero h1{font-size:1.5rem;margin:0 0 6px}
+.hero p{margin:0;opacity:.92}
+.warnbox{background:#fff7ed;border:1.5px solid #f59e0b;color:#7c2d12;border-radius:12px;padding:12px 16px;margin-bottom:14px;font-size:.92rem}
+@media (prefers-color-scheme:dark){.warnbox{background:#2a1c0a;color:#fcd34d;border-color:#92400e}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--sh)}
+label.lbl{display:block;font-weight:600;margin-bottom:6px;font-size:.92rem}
+textarea,input{width:100%;padding:12px 14px;border:1.5px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx);font-size:1rem;font-family:inherit;outline:none}
+textarea:focus,input:focus{border-color:var(--ac)}
+textarea{min-height:110px;resize:vertical;font-family:monospace}
+.row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+button{padding:11px 22px;border:0;border-radius:12px;background:var(--ac);color:#fff;font-size:1rem;cursor:pointer;font-family:inherit;font-weight:600}
+button:hover{filter:brightness(1.08)}button:disabled{opacity:.6}
+.sec{background:var(--bg)!important;color:var(--tx)!important;border:1.5px solid var(--bd)}
+.mini{padding:4px 11px;font-size:.82rem;border-radius:9px}
+small{color:var(--mut)}
+.res{padding:10px 0;border-top:1px dashed var(--bd);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.res:first-child{border-top:0}
+.badge{padding:1px 10px;border-radius:99px;font-weight:600;font-size:.82rem;border:1px solid currentColor}
+.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.res img,.hd img{width:30px;height:30px;border-radius:50%}
+.who{display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:1 1 260px}
+.acts{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.lnk-wrap{display:flex;gap:6px;align-items:center;flex-wrap:wrap;word-break:break-all}
+a.lnk{color:var(--ac);font-weight:600;text-decoration:none}
+.dt{color:var(--mut);font-size:.82rem}
+.hd{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.scroll{max-height:340px;overflow:auto}
+.ri{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-top:1px dashed var(--bd)}
+.ri:first-child{border-top:0}
+.ri div{min-width:0;word-break:break-word}
+h3{margin:4px 0 10px;font-size:1.05rem}
+.bar{height:8px;background:var(--bd);border-radius:6px;margin:8px 0;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .3s}
+footer{text-align:center;margin:24px 0 8px;color:var(--mut)}footer a{color:var(--ac);font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<main>
+<div class="hero"><h1>⭐ মাল্টি-অ্যাকাউন্ট স্টার টুল</h1><p>আপনার নিজের একাধিক GitHub অ্যাকাউন্টের টোকেন দিয়ে একটি রিপোজিটরিতে একসাথে স্টার দিন।</p></div>
+<div class="warnbox">⚠️ <b>শুধু নিজের মালিকানাধীন অ্যাকাউন্টের জন্য ব্যবহার করুন।</b> অন্য কারো অ্যাকাউন্ট দিয়ে বা ভাড়া করা/কেনা অ্যাকাউন্ট দিয়ে স্টার বাড়ানো GitHub-এর নিয়ম ভঙ্গ করে এবং এতে অ্যাকাউন্ট সাসপেন্ড হতে পারে। এখানে পাসওয়ার্ড নয়, শুধু <b>Personal Access Token</b> ব্যবহার হয়।</div>
+
+<div class="card">
+<label class="lbl">যে রিপোজিটরিতে স্টার দিতে চান (লিংক)</label>
+<input id="repo" placeholder="https://github.com/owner/repo">
+<div style="height:10px"></div>
+<label class="lbl">আপনার অ্যাকাউন্টগুলোর টোকেন (প্রতি লাইনে একটি)</label>
+<textarea id="toks" placeholder="ghp_xxxxxxxxxxxx...&#10;ghp_yyyyyyyyyyyy...&#10;..."></textarea>
+<small>প্রতিটি টোকেন <code>public_repo</code> পারমিশনসহ বানাতে হবে। টোকেন কোথাও সেভ হয় না, সরাসরি GitHub-এ যায়।</small>
+<div class="row"><button id="go">⭐ স্টার দিন</button><button id="un" type="button" class="sec">☆ আনস্টার করুন</button><button id="chk" type="button" class="sec">🔍 স্ট্যাটাস চেক</button><button id="ls" type="button" class="sec">📋 টোকেনের স্টার তালিকা</button><button id="d" type="button" class="sec" hidden>ডেমো দেখুন</button></div>
+<small>"টোকেনের স্টার তালিকা" বাটনে রিপোজিটরি লিংক লাগে না — শুধু টোকেন দিয়েই দেখা যাবে ওই অ্যাকাউন্ট কোন কোন রিপোতে স্টার দিয়েছে (কবে দিয়েছে সহ), এবং সেখান থেকেই আনস্টার করা যাবে। একই টোকেন একাধিক রিপোজিটরির জন্য বারবার ব্যবহার করা যায়।</small>
+</div>
+<div class="card" id="forkcard">
+<h3>🍴 GitHub ফর্ক তৈরি করুন</h3>
+<label class="lbl">যে রিপোজিটরি ফর্ক করতে চান (লিংক)</label>
+<input id="frepo" placeholder="https://github.com/owner/repo">
+<div style="height:10px"></div>
+<label class="lbl">ফর্কের নাম (লিংক অনুযায়ী নিজে থেকেই বসে যাবে, চাইলে বদলানো যাবে)</label>
+<input id="fname" placeholder="repo-name">
+<div class="row"><button id="fk" type="button">🍴 ফর্ক তৈরি করুন</button></div>
+<small>ওপরের টোকেন বক্সের টোকেনগুলো ব্যবহার হবে (প্রতিটি অ্যাকাউন্টের নিচে ফর্ক হবে)। টোকেনে <code>public_repo</code> পারমিশন লাগবে।</small>
+<div id="fout" style="margin-top:10px"></div>
+</div>
+<div id="prog"></div>
+<div id="out" class="card" hidden></div>
+<div id="lst" hidden></div>
+<footer>Created with ❤️ by <a href="https://www.facebook.com/" target="_blank" rel="noopener">মামুন</a></footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const bn=n=>Number(n).toLocaleString('bn-BD');
+let DEMO=false,RP=null,RES=[],LST=[];
+function parseRepo(v){
+  v=v.trim().replace(/^https?:\/\/(www\.)?github\.com\//i,'').replace(/\/$/,'');
+  const p=v.split('/');return p.length>=2?{owner:p[0],repo:p[1]}:null;
+}
+function getToks(){return [...new Set($('toks').value.split('\n').map(s=>s.trim()).filter(Boolean))]}
+function ago(iso){
+  const s=Math.max(0,(Date.now()-new Date(iso))/1000);
+  let t;
+  if(s<60)t='এইমাত্র';
+  else if(s<3600)t=bn(Math.floor(s/60))+' মিনিট আগে';
+  else if(s<86400)t=bn(Math.floor(s/3600))+' ঘণ্টা আগে';
+  else if(s<2592000)t=bn(Math.floor(s/86400))+' দিন আগে';
+  else if(s<31536000)t=bn(Math.floor(s/2592000))+' মাস আগে';
+  else t=bn(Math.floor(s/31536000))+' বছর আগে';
+  return t+' • '+new Date(iso).toLocaleDateString('bn-BD',{day:'numeric',month:'long',year:'numeric'});
+}
+async function copy(txt,btn){
+  try{await navigator.clipboard.writeText(txt)}catch(e){const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}
+  const o=btn.textContent;btn.textContent='✓ কপি হয়েছে';setTimeout(()=>btn.textContent=o,1300);
+}
+async function starredAt(h,owner,repo){
+  const want=(owner+'/'+repo).toLowerCase();
+  for(let p=1;p<=30;p++){
+    const r=await fetch(`https://api.github.com/user/starred?per_page=100&page=${p}`,{headers:{...h,Accept:'application/vnd.github.star+json'}});
+    if(!r.ok)return null;
+    const a=await r.json();
+    const f=a.find(x=>x.repo.full_name.toLowerCase()===want);
+    if(f)return f.starred_at;
+    if(a.length<100)return null;
+  }
+  return null;
+}
+async function actWith(token,owner,repo,action){
+  const h={Accept:'application/vnd.github+json',Authorization:'Bearer '+token};
+  const me=await fetch('https://api.github.com/user',{headers:h});
+  if(me.status===401)return{st:'bad',msg:'টোকেন অকার্যকর বা মেয়াদ শেষ',t:token};
+  if(!me.ok)return{st:'bad',msg:'GitHub ত্রুটি '+me.status,t:token};
+  const u=await me.json();
+  if(action==='check'){
+    const r=await fetch(`https://api.github.com/user/starred/${owner}/${repo}`,{headers:h});
+    if(r.status===204)return{st:'ok',msg:'বর্তমানে স্টার দেওয়া আছে',u,t:token,at:await starredAt(h,owner,repo)};
+    if(r.status===404)return{st:'bad',msg:'স্টার দেওয়া নেই',u,t:token};
+    return{st:'bad',msg:'যাচাই ব্যর্থ, কোড '+r.status,u,t:token};
+  }
+  if(action==='star'){
+    const c=await fetch(`https://api.github.com/user/starred/${owner}/${repo}`,{headers:h});
+    if(c.status===204)return{st:'ok',was:true,msg:'আগে থেকেই স্টার দেওয়া ছিল',u,t:token,at:await starredAt(h,owner,repo)};
+  }
+  const method=action==='star'?'PUT':'DELETE';
+  const r=await fetch(`https://api.github.com/user/starred/${owner}/${repo}`,{method,headers:{...h,'Content-Length':'0'}});
+  if(r.status===204)return{st:'ok',msg:action==='star'?'স্টার দেওয়া হয়েছে':'আনস্টার করা হয়েছে',u,t:token,at:action==='star'?new Date().toISOString():null,un:action!=='star'};
+  if(r.status===404)return{st:'bad',msg:'রিপোজিটরি পাওয়া যায়নি বা প্রাইভেট',u,t:token};
+  if(r.status===403)return{st:'bad',msg:'অনুমতি নেই (টোকেনে public_repo স্কোপ আছে কি না দেখুন)',u,t:token};
+  return{st:'bad',msg:'ব্যর্থ, কোড '+r.status,u,t:token};
+}
+function cpBtn(v){return `<button type="button" class="sec mini" data-a="copy" data-v="${esc(v)}">📋 কপি</button>`}
+function row(r,i){
+  if(r.st==='bad'&&!r.u)return `<div class="res"><span class="badge bad">❌ ব্যর্থ</span><small>${esc(r.msg)}</small></div>`;
+  const u=r.u;
+  return `<div class="res"><div class="who"><img src="${esc(u.avatar_url)}" alt=""><b>@${esc(u.login)}</b><span class="badge ${r.was?'warn':r.st==='ok'?'ok':'bad'}">${r.was?'⭐':r.st==='ok'?'✅':'❌'} ${esc(r.msg)}</span>${r.at&&!r.un?`<span class="dt">🕒 স্টার দেওয়া হয়েছিল: <b>${esc(ago(r.at))}</b></span>`:''}</div>
+<div class="acts">${(r.st==='ok'&&!r.un)?`<button type="button" class="sec mini" data-a="u" data-i="${i}">☆ আনস্টার করুন</button>`:`<button type="button" class="mini" data-a="s" data-i="${i}">⭐ স্টার দিন</button>`}</div>
+<div class="lnk-wrap" style="flex-basis:100%"><a class="lnk" href="${esc(u.html_url)}" target="_blank" rel="noopener">${esc(u.html_url)}</a>${cpBtn(u.html_url)}</div></div>`;
+}
+function run(results,total){
+  $('out').hidden=false;
+  $('out').innerHTML=results.map((r,i)=>r?row(r,i):'<div class="res"><small>⏳ অপেক্ষমাণ...</small></div>').join('');
+  const done=results.filter(Boolean).length;
+  $('prog').innerHTML=done<total?`<div class="bar"><i style="width:${done/total*100}%"></i></div><small>${done}/${total}</small>`:`<small>সম্পন্ন: ${results.filter(r=>r.st==='ok').length}/${total} অ্যাকাউন্টে সফল।</small>`;
+}
+function setBusy(b){[$('go'),$('un'),$('chk'),$('ls')].forEach(x=>x.disabled=b)}
+async function doAction(action){
+  if(DEMO&&action==='star'){
+    RES=RES.map(r=>(r.st==='ok'&&r.at)?{...r,was:true,msg:'আগে থেকেই স্টার দেওয়া ছিল'}:{...r,st:'ok',was:false,un:false,msg:'স্টার দেওয়া হয়েছে',at:new Date().toISOString()});
+    run(RES,RES.length);return;
+  }
+  const rp=parseRepo($('repo').value);
+  if(!rp){alert('সঠিক রিপোজিটরি লিংক দিন, যেমন https://github.com/owner/repo');return}
+  const toks=getToks();
+  if(!toks.length){alert('কমপক্ষে একটি টোকেন দিন');return}
+  DEMO=false;RP=rp;setBusy(true);
+  RES=new Array(toks.length).fill(null);run(RES,toks.length);
+  for(let i=0;i<toks.length;i++){RES[i]=await actWith(toks[i],rp.owner,rp.repo,action);run(RES,toks.length)}
+  setBusy(false);
+}
+async function single(i,action){
+  const r=RES[i];if(!r||!r.u)return;
+  if(DEMO){if(action==='star'&&r.st==='ok'&&r.at){RES[i]={...r,was:true,msg:'আগে থেকেই স্টার দেওয়া ছিল'};run(RES,RES.length);return}RES[i]={...r,was:false,un:action!=='star',st:'ok',msg:action==='star'?'স্টার দেওয়া হয়েছে':'আনস্টার করা হয়েছে',at:action==='star'?new Date().toISOString():null}}
+  else{
+    if(!RP){alert('আগে রিপোজিটরি লিংক দিয়ে একবার চালান');return}
+    RES[i]=await actWith(r.t,RP.owner,RP.repo,action);
+  }
+  run(RES,RES.length);
+}
+/* ---- টোকেন দিয়ে স্টার তালিকা ---- */
+async function listStars(token){
+  const h={Accept:'application/vnd.github+json',Authorization:'Bearer '+token};
+  const me=await fetch('https://api.github.com/user',{headers:h});
+  if(me.status===401)return{err:'টোকেন অকার্যকর বা মেয়াদ শেষ',t:token};
+  if(!me.ok)return{err:'GitHub ত্রুটি '+me.status,t:token};
+  const u=await me.json(),items=[];
+  for(let p=1;p<=30;p++){
+    const r=await fetch(`https://api.github.com/user/starred?per_page=100&page=${p}`,{headers:{...h,Accept:'application/vnd.github.star+json'}});
+    if(!r.ok)return{err:'তালিকা আনা ব্যর্থ, কোড '+r.status,u,t:token,items};
+    const a=await r.json();
+    a.forEach(x=>items.push({name:x.repo.full_name,url:x.repo.html_url,at:x.starred_at}));
+    if(a.length<100)break;
+  }
+  return{u,t:token,items};
+}
+function renderList(){
+  const box=$('lst');box.hidden=false;
+  box.innerHTML=LST.map((a,i)=>{
+    if(!a)return `<div class="card"><small>⏳ অপেক্ষমাণ...</small></div>`;
+    if(a.err&&!a.u)return `<div class="card"><span class="badge bad">❌ ব্যর্থ</span> <small>${esc(a.err)}</small></div>`;
+    const u=a.u;
+    return `<div class="card"><div class="hd"><img src="${esc(u.avatar_url)}" alt=""><b>@${esc(u.login)}</b><span class="badge ok">⭐ ${bn(a.items.length)}টি রিপোতে স্টার</span></div>
+<div class="lnk-wrap" style="margin-bottom:8px"><a class="lnk" href="${esc(u.html_url)}" target="_blank" rel="noopener">${esc(u.html_url)}</a>${cpBtn(u.html_url)}</div>
+${a.err?`<small class="bad">${esc(a.err)}</small>`:''}
+<div class="scroll">${a.items.length?a.items.map((x,j)=>`<div class="ri"><div><a class="lnk" href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}</a><br><span class="dt">🕒 ${esc(ago(x.at))}</span></div><button type="button" class="sec mini" data-a="lu" data-i="${i}" data-j="${j}">☆ আনস্টার</button></div>`).join(''):'<small>কোনো স্টার নেই।</small>'}</div></div>`;
+  }).join('');
+}
+async function doList(){
+  const toks=getToks();
+  if(!toks.length){alert('কমপক্ষে একটি টোকেন দিন');return}
+  DEMO=false;setBusy(true);
+  LST=new Array(toks.length).fill(null);renderList();
+  for(let i=0;i<toks.length;i++){LST[i]=await listStars(toks[i]);renderList()}
+  setBusy(false);
+}
+async function unstarList(i,j){
+  const a=LST[i],x=a&&a.items[j];if(!x)return;
+  if(!DEMO){
+    const r=await fetch(`https://api.github.com/user/starred/${x.name}`,{method:'DELETE',headers:{Accept:'application/vnd.github+json',Authorization:'Bearer '+a.t,'Content-Length':'0'}});
+    if(r.status!==204){alert('আনস্টার ব্যর্থ, কোড '+r.status);return}
+  }
+  a.items.splice(j,1);renderList();
+}
+/* ---- ফর্ক তৈরি ---- */
+$('frepo').addEventListener('input',()=>{const rp=parseRepo($('frepo').value);$('fname').value=rp?rp.repo.replace(/\.git$/,''):''});
+function frow(r){
+  if(r.err&&!r.u)return `<div class="res"><span class="badge bad">❌ ব্যর্থ</span><small>${esc(r.err)}</small></div>`;
+  const u=r.u;
+  return `<div class="res"><div class="who"><img src="${esc(u.avatar_url)}" alt=""><b>@${esc(u.login)}</b>${r.err?`<span class="badge bad">❌ ${esc(r.err)}</span>`:'<span class="badge ok">✅ ফর্ক তৈরি হয়েছে</span>'}</div>
+${r.url?`<div class="lnk-wrap" style="flex-basis:100%"><a class="lnk" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.url)}</a>${cpBtn(r.url)}</div>`:''}</div>`;
+}
+async function forkWith(token,owner,repo,name){
+  const h={Accept:'application/vnd.github+json',Authorization:'Bearer '+token};
+  const me=await fetch('https://api.github.com/user',{headers:h});
+  if(me.status===401)return{err:'টোকেন অকার্যকর বা মেয়াদ শেষ'};
+  if(!me.ok)return{err:'GitHub ত্রুটি '+me.status};
+  const u=await me.json();
+  const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/forks`,{method:'POST',headers:{...h,'Content-Type':'application/json'},body:JSON.stringify({name})});
+  if(r.status===202||r.status===200){const d=await r.json();return{u,url:d.html_url||`https://github.com/${u.login}/${name}`}}
+  if(r.status===404)return{u,err:'রিপোজিটরি পাওয়া যায়নি বা প্রাইভেট'};
+  if(r.status===403)return{u,err:'অনুমতি নেই (public_repo স্কোপ দেখুন)'};
+  if(r.status===422)return{u,err:'ফর্ক সম্ভব নয় (নিজের রিপো বা নাম সমস্যা)'};
+  return{u,err:'ব্যর্থ, কোড '+r.status};
+}
+async function doFork(){
+  const rp=parseRepo($('frepo').value);
+  if(!rp){alert('সঠিক রিপোজিটরি লিংক দিন, যেমন https://github.com/owner/repo');return}
+  const toks=getToks();
+  if(!toks.length){alert('কমপক্ষে একটি টোকেন দিন');return}
+  const name=($('fname').value.trim()||rp.repo).replace(/\.git$/,'');
+  const btn=$('fk');btn.disabled=true;
+  const out=[];const draw=()=>{$('fout').innerHTML=toks.map((_,i)=>out[i]?frow(out[i]):'<div class="res"><small>⏳ অপেক্ষমাণ...</small></div>').join('')};
+  draw();
+  for(let i=0;i<toks.length;i++){
+    try{out[i]=await forkWith(toks[i],rp.owner,rp.repo,name)}catch(e){out[i]={err:'নেটওয়ার্ক ত্রুটি'}}
+    draw();
+  }
+  btn.disabled=false;
+}
+$('fk').onclick=doFork;
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const a=b.dataset.a;
+  if(a==='copy')copy(b.dataset.v,b);
+  else if(a==='s'||a==='u')single(+b.dataset.i,a==='s'?'star':'unstar');
+  else if(a==='lu')unstarList(+b.dataset.i,+b.dataset.j);
+});
+$('go').onclick=()=>doAction('star');
+$('un').onclick=()=>doAction('unstar');
+$('chk').onclick=()=>doAction('check');
+$('ls').onclick=doList;
+$('d').onclick=()=>{
+  DEMO=true;
+  const av="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><circle cx="15" cy="15" r="15" fill="#8b7fff"/><circle cx="15" cy="12" r="5" fill="#fff"/><path d="M5 26a10 10 0 0 1 20 0z" fill="#fff"/></svg>');
+  const day=n=>new Date(Date.now()-n*864e5).toISOString();
+  const mk=(login,ok,msg,at)=>({st:ok?'ok':'bad',msg,at,u:{login,avatar_url:av,html_url:'https://github.com/'+login}});
+  RES=[mk('mamun-main',true,'বর্তমানে স্টার দেওয়া আছে',day(12)),mk('mamun-alt1',true,'বর্তমানে স্টার দেওয়া আছে',day(0.2)),mk('mamun-alt2',false,'স্টার দেওয়া নেই',null),mk('mamun-alt3',true,'স্টার দেওয়া হয়েছে',day(0))];
+  $('repo').value='https://github.com/example-owner/example-repo';
+  run(RES,RES.length);
+  const it=(n,d)=>({name:n,url:'https://github.com/'+n,at:day(d)});
+  LST=[{u:RES[0].u,items:[it('example-owner/example-repo',12),it('torvalds/linux',95),it('facebook/react',400),it('vercel/next.js',800)]},
+       {u:RES[1].u,items:[it('example-owner/example-repo',0.2),it('microsoft/vscode',30)]}];
+  renderList();
+};
+const dm=()=>{$('d').hidden=location.hash!=='#demo'};dm();addEventListener('hashchange',dm);
+</script>
+</body>
+</html>
